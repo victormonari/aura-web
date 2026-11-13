@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Nunito', system-ui, sans-serif;
+  --color-aura-violet: #6741d9;
+  --color-aura-lilac: #b197fc;
+  --color-aura-soft: #e5dbff;
+  --color-aura-amber: #f59f00;
+  --color-aura-night: #25213d;
+  --color-aura-termo: #0c8599;
+  --color-aura-sensor: #e03131;
+}
+
+html,
+body {
+  margin: 0;
+  background: #f3f0ff;
+}

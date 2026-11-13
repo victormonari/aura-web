@@ -1,0 +1,46 @@
+{
+  "name": "aura-web",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "modern dev",
+    "build": "modern build",
+    "serve": "modern serve",
+    "prepare": "rs hooks",
+    "check": "rs check",
+    "lint": "rs lint",
+    "format": "rs fmt",
+    "db:types": "supabase gen types typescript --project-id ipiayypejoowwcmlnlbl --schema public > src/lib/database.types.ts"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.3.0"
+  },
+  "dependencies": {
+    "@modern-js/runtime": "3.11.3",
+    "@supabase/supabase-js": "2.119.0",
+    "clsx": "2.1.1",
+    "lucide-react": "1.72.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.0",
+    "recharts": "3.10.1"
+  },
+  "devDependencies": {
+    "@modern-js/app-tools": "3.11.3",
+    "@modern-js/tsconfig": "3.11.3",
+    "@tailwindcss/postcss": "4.3.5",
+    "@types/node": "^20",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "postcss": "8.5.32",
+    "rstack": "0.8.2",
+    "supabase": "3.1.0",
+    "tailwindcss": "4.3.5",
+    "typescript": "~5.7.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "supabase",
+      "@swc/core",
+      "core-js"
+    ]
+  }
+}
