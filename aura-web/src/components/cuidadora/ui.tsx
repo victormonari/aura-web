@@ -134,7 +134,7 @@ export const Separator = () => <div className="ml-[84px] h-px bg-line" />;
 /** Scrollable body so it fits both the /demo frame and real phones. */
 export function Body({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={clsx('flex-1 overflow-y-auto px-5 pb-8 pt-2 flex flex-col gap-4', className)}>
+    <div className={clsx('flex-1 min-h-0 overflow-y-auto px-5 pb-8 pt-2 flex flex-col gap-4 [&>*]:shrink-0', className)}>
       {children}
     </div>
   );
