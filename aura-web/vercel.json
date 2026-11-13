@@ -1,4 +1,5 @@
 {
-  "buildCommand": "modern deploy",
-  "outputDirectory": ".vercel/output"
+  "buildCommand": "modern build",
+  "outputDirectory": "dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/html/index/index.html" }]
 }
