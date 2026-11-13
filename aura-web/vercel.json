@@ -1,5 +1,5 @@
 {
-  "buildCommand": "modern build",
+  "buildCommand": "modern build && cp -R dist/public/. dist/",
   "outputDirectory": "dist",
   "rewrites": [{ "source": "/(.*)", "destination": "/html/index/index.html" }]
 }
