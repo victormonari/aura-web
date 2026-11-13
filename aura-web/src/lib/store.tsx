@@ -202,6 +202,17 @@ export function AuraProvider({
     ch.on('broadcast', { event: 'cmd' }, ({ payload }) => {
       if (host) hostCmd.current(payload as Cmd);
     });
+    // Aura Sensor connected on another device (e.g. the caregiver's phone or the
+    // family app): the host uses that real pulse to drive the simulated night.
+    ch.on('broadcast', { event: 'pulse' }, ({ payload }) => {
+      if (!host) return;
+      const { bpm, nombre } = payload as { bpm: number | null; nombre?: string };
+      realPulse.current = bpm;
+      setSensorNombre(bpm ? `${nombre ?? 'Aura Sensor'} (remoto)` : null);
+      if (bpm && !liveRef.current.running) {
+        setLive((p) => ({ ...p, pulso: bpm, fuente: 'xiaomi' }));
+      }
+    });
     for (const table of ['noches', 'sabana_config', 'alertas', 'consejos', 'turnos']) {
       ch.on('postgres_changes', { event: '*', schema: 'public', table }, () => void load());
     }
@@ -454,23 +465,33 @@ export function AuraProvider({
     await load();
   };
 
+  const sendPulse = (bpm: number | null, nombre?: string) => {
+    if (host) return;
+    void channel.current?.send({ type: 'broadcast', event: 'pulse', payload: { bpm, nombre } });
+  };
+
   const conectarSensor = async () => {
+    let deviceName = 'Aura Sensor';
     const name = await connectSensor(
       (bpm) => {
         realPulse.current = bpm;
         if (!liveRef.current.running) setLive((p) => ({ ...p, pulso: bpm, fuente: 'xiaomi' }));
+        sendPulse(bpm, deviceName);
       },
       () => {
         realPulse.current = null;
         setSensorNombre(null);
+        sendPulse(null);
       },
     );
+    deviceName = name;
     setSensorNombre(name);
   };
 
   const usarSimulado = () => {
     realPulse.current = null;
     setSensorNombre(null);
+    sendPulse(null);
   };
 
   const nombreDe = (id: string | null) =>
