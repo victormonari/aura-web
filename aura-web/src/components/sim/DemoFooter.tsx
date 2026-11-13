@@ -1,4 +1,4 @@
-import { Smartphone } from 'lucide-react';
+import { ChevronRight, Moon, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 /** Footer of the demo page: links to the bare phone routes + LAN hint. */
@@ -11,21 +11,30 @@ export function DemoFooter() {
   }, []);
 
   return (
-    <footer className="mt-10 flex flex-col items-center gap-2 text-sm text-neutral-600">
-      <div className="flex gap-3">
-        <a href="/cuidadora" className="flex items-center gap-1 rounded-full bg-white px-4 py-2 font-bold text-aura-violet shadow hover:bg-aura-soft">
-          <Smartphone size={16} /> Abrir Aura Rest (quien descansa)
+    <footer className="mx-auto mt-14 flex max-w-md flex-col items-center gap-4 pb-6 text-center">
+      <div className="card w-full overflow-hidden text-left">
+        <a href="/cuidadora" className="flex items-center gap-3 px-4 py-3.5 active:bg-surface-2">
+          <span className="grid size-8 place-items-center rounded-xl bg-amber/15">
+            <Moon className="size-4 text-amber" strokeWidth={1.75} />
+          </span>
+          <span className="flex-1 text-[15px]">Abrir Aura Rest (quien descansa)</span>
+          <ChevronRight className="size-4 text-ink-3" />
         </a>
-        <a href="/familia" className="flex items-center gap-1 rounded-full bg-white px-4 py-2 font-bold text-blue-700 shadow hover:bg-blue-50">
-          <Smartphone size={16} /> Abrir Aura Rest Familia
+        <div className="ml-[60px] h-px bg-line" />
+        <a href="/familia" className="flex items-center gap-3 px-4 py-3.5 active:bg-surface-2">
+          <span className="grid size-8 place-items-center rounded-xl bg-accent/15">
+            <Users className="size-4 text-accent" strokeWidth={1.75} />
+          </span>
+          <span className="flex-1 text-[15px]">Abrir Aura Rest Familia</span>
+          <ChevronRight className="size-4 text-ink-3" />
         </a>
       </div>
-      <p>
-        Abre en el celular: <code className="rounded bg-white px-1.5 py-0.5">{base}/cuidadora</code> ·{' '}
-        <code className="rounded bg-white px-1.5 py-0.5">{base}/familia</code>
+      <p className="text-[13px] text-ink-2">
+        Abre en el celular: <span className="font-mono text-ink">{base}/cuidadora</span> ·{' '}
+        <span className="font-mono text-ink">{base}/familia</span>
       </p>
-      <p className="text-xs text-neutral-400">
-        (misma red Wi-Fi; &lt;ip&gt; = IP local del portátil, p. ej. con <code>ipconfig getifaddr en0</code>)
+      <p className="text-[12px] text-ink-3">
+        Misma red Wi-Fi · &lt;ip&gt; = IP local del portátil (<span className="font-mono">ipconfig getifaddr en0</span>)
       </p>
     </footer>
   );

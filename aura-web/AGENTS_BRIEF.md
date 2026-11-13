@@ -53,3 +53,17 @@ Real product: no app is "Marta's" or "Karen's". Any household, any names.
 - `FamiliaApp` props: `{ bare?: boolean; onSalir?: () => void }` — show "Cambiar de persona" (calls onSalir) in Configuración when provided.
 - Turnos "Tomar": `setTurno(t, familiar.id)`; "mine" = responsable === familiar.id; "cuidadora's load" = responsable === cuidadora.id.
 - Demo page labels already generic. Sim/footer links must point to `/cuidadora` and `/familia` (and `/demo` is the page itself).
+
+## UPDATE 3 — Dark, Apple-like redesign (overrides all visual rules above)
+Goal: minimal, elegant, premium dark UI in the spirit of iOS / Apple Health / Apple Sleep. Less color, more space, perfect typography.
+Design system already in `src/routes/index.css` (read it): tokens `bg` (#000), `surface` (#1c1c1e), `surface-2` (#2c2c2e), `surface-3`, `line` (hairline), `ink` / `ink-2` / `ink-3` (text), accents `accent` (Aura violet #a594ff), `amber` (moon), `teal` (TermoSleep), `red` (Sensor/alerts), `green`, `orange`. Utility classes: `.card` (grouped surface, 22px radius, hairline), `.card-2`, `.glass` (frosted bar), `.eyebrow` (small uppercase label), `.title-xl` (34px), `.title-lg` (28px), `.btn` + `.btn-primary` (white pill) / `.btn-accent` / `.btn-quiet`. Font: SF Pro system stack (already `font-sans`).
+Rules:
+- Pure dark everywhere (`bg-bg text-ink`). No light backgrounds, no pastel blocks, no colored full-card fills. Color only as small accents: icon tints in a 15%-opacity rounded square (e.g. `bg-amber/15 text-amber`), status dots, numbers, chart strokes.
+- iOS patterns: inset grouped lists with hairline separators (`h-px bg-line`), large titles, SF-like weights (semibold 600 / bold 700, tracking-tight on big numbers), pill buttons, frosted tab bar (`.glass`) with thin icons (lucide strokeWidth 1.75) and 10–11px labels.
+- Generous spacing (px-5, gap-3/4), 22px card radius, no heavy shadows, no borders except hairlines.
+- Logos on dark: use `/aura-logo-blanco.png`, `/aura-rest-logo-blanco.png`, etc.; symbols (`/aura-simbolo.png`…) work on dark.
+- Big metrics like Apple Health: label (`.eyebrow` or 13px ink-2) + large number (34–48px bold) + unit (ink-2).
+- Recharts: no grid or very faint (`stroke rgba(255,255,255,0.06)`), axis ticks `#6e6e73` 11px, no axis lines, rounded bars, accent/teal strokes, dark tooltip.
+- The phone frame already adds a 46px status-bar spacer on /demo; inside, start content directly (no extra top padding beyond ~8px).
+- Keep all existing behavior, data wiring and store usage. Keep caregiver accessibility (text ≥ 20px, targets ≥ 64px, max 3 options, icon + word) — elegant but large: think Apple "Sleep" bedtime screen, very calm, mostly black with a soft amber/violet glow.
+- Caregiver night mode: pure black, dim amber moon, ink-2 text, no bright whites (use ink-2) to protect sleep.

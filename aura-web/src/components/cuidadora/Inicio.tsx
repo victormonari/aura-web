@@ -1,33 +1,32 @@
-import { Moon, Music, Sun } from 'lucide-react';
+import { BarChart3, ChevronRight, Moon, Music, Thermometer } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useAura } from '../../lib/store';
 import { type Screen, saludo } from './helpers';
-import { Body, Title, TopBar } from './ui';
+import { BigButton, Body, IconTile, Separator, STROKE, Title, TopBar } from './ui';
 
-function Card({
+function Row({
   icon,
   titulo,
   sub,
   onClick,
-  className,
 }: {
   icon: ReactNode;
   titulo: string;
   sub: string;
   onClick: () => void;
-  className: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`w-full min-h-24 rounded-3xl px-5 py-4 flex items-center gap-4 text-left transition active:scale-[0.98] ${className}`}
+      className="w-full min-h-[84px] flex items-center gap-4 px-5 py-3 text-left active:bg-surface-2"
     >
-      <span className="shrink-0">{icon}</span>
-      <span className="flex flex-col">
-        <span className="text-[26px] font-extrabold leading-tight">{titulo}</span>
-        <span className="text-xl opacity-80">{sub}</span>
+      {icon}
+      <span className="flex-1">
+        <span className="block text-[22px] font-semibold leading-tight">{titulo}</span>
+        <span className="block text-[20px] text-ink-2">{sub}</span>
       </span>
+      <ChevronRight size={22} className="text-ink-3" />
     </button>
   );
 }
@@ -39,41 +38,63 @@ export function Inicio({ go }: { go: (s: Screen) => void }) {
   const estado = `Tu cama está lista · ${temp.toLocaleString('es-CO')} °C`;
 
   return (
-    <>
+    <div className="flex flex-1 flex-col min-h-0 bg-[radial-gradient(ellipse_80%_40%_at_50%_0%,rgba(125,107,255,0.16),transparent)]">
       <TopBar leer={`${hola}. ${estado.replace('·', '.')}`} />
       <Body>
-        <div className="flex flex-col gap-2">
-          <Title>{hola}</Title>
-          <p className="text-xl text-neutral-700 flex items-center gap-2">
-            <img src="/aura-termosleep-simbolo.png" alt="" className="h-8 w-8" />
-            {estado}
-          </p>
+        <Title eyebrow="Esta noche">{hola}</Title>
+
+        {/* Bed status, Apple Health style: label + big number + unit */}
+        <div className="card p-5 flex items-center gap-4">
+          <IconTile tint="bg-teal/15 text-teal">
+            <Thermometer size={24} strokeWidth={STROKE} />
+          </IconTile>
+          <div className="flex-1">
+            <span className="block text-[20px] text-ink-2">Tu cama está lista</span>
+            <span className="flex items-baseline gap-1">
+              <span className="text-[44px] font-bold leading-none tracking-tight">
+                {temp.toLocaleString('es-CO')}
+              </span>
+              <span className="text-[20px] text-ink-2">°C</span>
+            </span>
+          </div>
         </div>
-        <Card
-          icon={<Moon size={44} />}
-          titulo="Dormir"
-          sub="Tu cama se prepara sola"
+
+        <BigButton
+          tone="primary"
+          icon={<Moon size={26} strokeWidth={STROKE} />}
+          className="min-h-[72px] text-[22px]"
           onClick={() => {
             dormir();
             go('durmiendo');
           }}
-          className="bg-aura-night text-amber-50 shadow-lg"
-        />
-        <Card
-          icon={<Music size={44} />}
-          titulo="Sonidos"
-          sub="Lluvia, mar, música"
-          onClick={() => go('sonidos')}
-          className="bg-aura-soft text-aura-night"
-        />
-        <Card
-          icon={<Sun size={44} />}
-          titulo="Mi descanso"
-          sub="Cómo dormiste"
-          onClick={() => go('descanso')}
-          className="bg-amber-100 text-aura-night"
-        />
+        >
+          Dormir
+        </BigButton>
+
+        <div className="card overflow-hidden">
+          <Row
+            icon={
+              <IconTile tint="bg-accent/15 text-accent">
+                <Music size={24} strokeWidth={STROKE} />
+              </IconTile>
+            }
+            titulo="Sonidos"
+            sub="Lluvia, mar, música"
+            onClick={() => go('sonidos')}
+          />
+          <Separator />
+          <Row
+            icon={
+              <IconTile tint="bg-amber/15 text-amber">
+                <BarChart3 size={24} strokeWidth={STROKE} />
+              </IconTile>
+            }
+            titulo="Mi descanso"
+            sub="Cómo dormiste"
+            onClick={() => go('descanso')}
+          />
+        </div>
       </Body>
-    </>
+    </div>
   );
 }

@@ -30,51 +30,45 @@ export function SensorCard() {
   };
 
   return (
-    <div className="rounded-2xl border border-aura-sensor/25 bg-[#fff5f5] p-4">
-      <div className="flex items-center gap-3">
-        <img src="/aura-sensor-simbolo.png" alt="" className="h-10 w-10 object-contain" />
+    <div className="card overflow-hidden">
+      <div className="flex items-center gap-4 px-4 py-4">
+        <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-red/15">
+          <Heart className="size-5 text-red" strokeWidth={1.75} />
+        </span>
         <div className="flex-1">
-          <div className="font-extrabold text-aura-night">Aura Sensor</div>
-          <div className="flex items-center gap-1 text-sm text-neutral-600">
-            {sensorNombre ? (
-              <>
-                <span className="h-2 w-2 rounded-full bg-green-500" /> Conectado: {sensorNombre}
-              </>
-            ) : (
-              <>
-                <span className="h-2 w-2 rounded-full bg-neutral-400" /> Usando pulso simulado
-              </>
-            )}
-          </div>
+          <p className="text-[17px] font-semibold">Aura Sensor</p>
+          <p className="flex items-center gap-1.5 text-[13px] text-ink-2">
+            <span className={sensorNombre ? 'size-1.5 rounded-full bg-green' : 'size-1.5 rounded-full bg-ink-3'} />
+            {sensorNombre ? `Conectado · ${sensorNombre}` : 'Pulso simulado'}
+          </p>
         </div>
-        <div className="flex items-center gap-1 text-lg font-extrabold text-aura-sensor">
-          <Heart size={18} className="animate-pulse" fill="currentColor" /> {live.pulso}
-        </div>
+        <p className="text-[28px] font-bold leading-none tracking-tight text-red tabular-nums">
+          {live.pulso}
+          <span className="ml-1 text-[13px] font-semibold text-ink-2">lpm</span>
+        </p>
       </div>
-      <div className="mt-3 flex gap-2">
-        {sensorNombre ? (
-          <button
-            type="button"
-            onClick={usarSimulado}
-            className="flex-1 rounded-xl border-2 border-aura-sensor py-2 text-sm font-bold text-aura-sensor hover:bg-white"
-          >
-            Usar simulado
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => void conectar()}
-            disabled={busy}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-aura-sensor py-2 text-sm font-bold text-white hover:brightness-110 disabled:opacity-50"
-          >
-            <Bluetooth size={16} /> {busy ? 'Buscando…' : 'Conectar Aura Sensor'}
-          </button>
-        )}
-      </div>
-      {error && <p className="mt-2 text-xs font-semibold text-aura-sensor">{error}</p>}
-      {!error && !sensorNombre && (
-        <p className="mt-2 text-xs text-neutral-500">Solo Chrome/Edge (Web Bluetooth).</p>
+      <div className="h-px bg-line" />
+      {sensorNombre ? (
+        <button
+          type="button"
+          onClick={usarSimulado}
+          className="w-full px-4 py-3.5 text-left text-[15px] text-red active:bg-surface-2"
+        >
+          Usar simulado
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => void conectar()}
+          disabled={busy}
+          className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-[15px] text-accent active:bg-surface-2 disabled:opacity-50"
+        >
+          <Bluetooth size={16} strokeWidth={1.75} />
+          {busy ? 'Buscando…' : 'Conectar Aura Sensor'}
+          <span className="ml-auto text-[12px] text-ink-3">Chrome / Edge</span>
+        </button>
       )}
+      {error && <p className="px-4 pb-3.5 text-[13px] text-red">{error}</p>}
     </div>
   );
 }

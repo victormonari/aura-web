@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { BigButton, Body, Title, TopBar } from './ui';
+import { BigButton, Body, STROKE, Title, TopBar } from './ui';
 
 const INHALA = 4;
 const EXHALA = 6;
@@ -28,31 +28,44 @@ export function Respirar({ onBack }: { onBack: () => void }) {
   // Each phase transition sets the target size; CSS animates over the phase length.
   const grande = ready && inhala && !terminado;
 
+  const dur = grande ? INHALA : EXHALA;
+
   return (
-    <>
-      <TopBar dark onBack={onBack} leer="Respira conmigo. Inhala cuatro segundos, exhala seis." />
-      <Body className="items-center text-center">
-        <Title dark>Respira conmigo</Title>
-        <div className="relative h-64 w-64 flex items-center justify-center">
+    <div className="flex flex-1 flex-col min-h-0 bg-black">
+      <TopBar night onBack={onBack} leer="Respira conmigo. Inhala cuatro segundos, exhala seis." />
+      <Body className="items-center text-center gap-6">
+        <Title night center eyebrow="Un minuto">
+          Respira conmigo
+        </Title>
+        <div className="relative size-72 flex items-center justify-center">
+          {/* soft glow + thin ring, like Apple Breathe but warmer */}
           <div
-            className="absolute rounded-full bg-aura-lilac/30 border-4 border-amber-200/40"
+            className="absolute rounded-full bg-[radial-gradient(circle,rgba(165,148,255,0.28),rgba(255,179,64,0.08)_70%,transparent)]"
             style={{
-              width: grande ? 240 : 110,
-              height: grande ? 240 : 110,
-              transition: `width ${grande ? INHALA : EXHALA}s ease-in-out, height ${grande ? INHALA : EXHALA}s ease-in-out`,
+              width: grande ? 270 : 120,
+              height: grande ? 270 : 120,
+              transition: `width ${dur}s ease-in-out, height ${dur}s ease-in-out`,
             }}
           />
-          <span className="relative text-[28px] font-extrabold text-amber-50">
+          <div
+            className="absolute rounded-full border border-accent/30"
+            style={{
+              width: grande ? 220 : 100,
+              height: grande ? 220 : 100,
+              transition: `width ${dur}s ease-in-out, height ${dur}s ease-in-out`,
+            }}
+          />
+          <span className="relative text-[28px] font-semibold tracking-tight text-ink-2">
             {terminado ? 'Muy bien' : inhala ? 'Inhala…' : 'Exhala…'}
           </span>
         </div>
-        <p className="text-xl text-amber-100/90">
+        <p className="text-[20px] text-ink-3 tabular-nums">
           {terminado ? 'Listo, ya puedes descansar' : `Quedan ${restante} segundos`}
         </p>
-        <BigButton tone="amber" icon={<Check size={28} />} onClick={onBack}>
+        <BigButton tone="night" icon={<Check size={24} strokeWidth={STROKE} />} onClick={onBack}>
           Terminar
         </BigButton>
       </Body>
-    </>
+    </div>
   );
 }

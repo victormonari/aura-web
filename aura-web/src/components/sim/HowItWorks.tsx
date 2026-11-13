@@ -11,18 +11,18 @@ const stepsFor = (apps: string) => [
 
 export function HowItWorks() {
   const { cuidadora } = useAura();
-  const STEPS = stepsFor(cuidadora ? `${cuidadora.nombre} y su familia` : 'quien descansa y su familia');
+  const steps = stepsFor(cuidadora ? `${cuidadora.nombre} y su familia` : 'quien descansa y su familia');
   return (
-    <div className="rounded-2xl bg-[#f8f6ff] p-4">
-      <h3 className="mb-3 text-sm font-extrabold uppercase tracking-wide text-aura-violet">Cómo funciona</h3>
-      <div className="flex items-center justify-between gap-1">
-        {STEPS.map((s, i) => (
+    <div className="card p-4">
+      <p className="eyebrow mb-4">Cómo funciona</p>
+      <div className="flex items-start justify-between gap-1">
+        {steps.map((s, i) => (
           <Fragment key={s.name}>
-            {i > 0 && <ChevronRight size={18} className="shrink-0 text-aura-lilac" />}
+            {i > 0 && <ChevronRight size={14} strokeWidth={1.75} className="mt-3 shrink-0 text-ink-3" />}
             <div className="flex flex-1 flex-col items-center text-center">
-              <img src={s.img} alt="" className="h-9 w-9 object-contain" />
-              <span className="mt-1 text-xs font-bold leading-tight text-aura-night">{s.name}</span>
-              <span className="text-[11px] leading-tight text-neutral-500">{s.what}</span>
+              <img src={s.img} alt="" className="size-9 object-contain" />
+              <span className="mt-2 text-[12px] font-semibold leading-tight">{s.name}</span>
+              <span className="mt-0.5 text-[11px] leading-tight text-ink-3">{s.what}</span>
             </div>
           </Fragment>
         ))}

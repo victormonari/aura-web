@@ -3,53 +3,89 @@ import type { ReactNode } from 'react';
 
 export type Tab = 'inicio' | 'vivo' | 'sabana' | 'consejos' | 'turnos' | 'config';
 
+/** Inset grouped surface (iOS style). */
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={clsx('card p-4', className)}>{children}</div>;
+}
+
+/** Hairline separator for grouped lists. */
+export function Sep({ inset = 0 }: { inset?: number }) {
+  return <div className="h-px bg-line" style={{ marginLeft: inset }} />;
+}
+
+/** Large iOS-style page title with optional subtitle. */
+export function SectionTitle({ children, sub }: { children: ReactNode; sub?: ReactNode }) {
   return (
-    <div className={clsx('rounded-2xl border border-neutral-200 bg-white p-3 shadow-sm', className)}>
-      {children}
+    <div className="px-1 pb-1 pt-2">
+      <h1 className="title-lg text-ink">{children}</h1>
+      {sub && <p className="mt-1 text-[15px] text-ink-2">{sub}</p>}
     </div>
   );
 }
 
-export function SectionTitle({ children, sub }: { children: ReactNode; sub?: ReactNode }) {
-  return (
-    <div className="mb-2">
-      <h2 className="text-lg font-extrabold text-aura-night">{children}</h2>
-      {sub && <p className="text-xs text-neutral-500">{sub}</p>}
-    </div>
-  );
+/** Small uppercase label above a group. */
+export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={clsx('eyebrow px-1', className)}>{children}</div>;
 }
 
 export type Tone = 'good' | 'warn' | 'bad' | 'neutral';
 
-const TONE: Record<Tone, string> = {
-  good: 'bg-emerald-50 border-emerald-200 text-emerald-700',
-  warn: 'bg-amber-50 border-amber-200 text-amber-700',
-  bad: 'bg-red-50 border-red-200 text-red-700',
-  neutral: 'bg-aura-soft/50 border-aura-soft text-aura-violet',
+export const TONE_TEXT: Record<Tone, string> = {
+  good: 'text-green',
+  warn: 'text-orange',
+  bad: 'text-red',
+  neutral: 'text-accent',
 };
 
+/** Icon in a 15 %-opacity rounded square. */
+export function IconBadge({ children, color }: { children: ReactNode; color: string }) {
+  return (
+    <span
+      className="grid size-9 shrink-0 place-items-center rounded-[10px]"
+      style={{ background: `color-mix(in srgb, ${color} 15%, transparent)`, color }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Apple Health-like metric: label + big number + unit. */
 export function Tile({
   label,
   value,
+  unit,
   hint,
-  tone = 'neutral',
+  tone,
   icon,
+  size = 'lg',
 }: {
   label: string;
   value: ReactNode;
+  unit?: string;
   hint?: ReactNode;
   tone?: Tone;
   icon?: ReactNode;
+  size?: 'lg' | 'md';
 }) {
   return (
-    <div className={clsx('rounded-2xl border p-3', TONE[tone])}>
-      <div className="flex items-center gap-1 text-xs font-semibold opacity-80">
+    <div className="card p-4">
+      <div className="flex items-center gap-1.5 text-[13px] font-semibold text-ink-2">
+        {tone && <span className={clsx('size-1.5 rounded-full bg-current', TONE_TEXT[tone])} />}
         {icon}
         {label}
       </div>
-      <div className="mt-1 text-2xl font-extrabold leading-tight">{value}</div>
-      {hint && <div className="text-[11px] opacity-80">{hint}</div>}
+      <div className="mt-1.5 flex items-baseline gap-1">
+        <span
+          className={clsx(
+            'font-bold tracking-tight text-ink tabular-nums',
+            size === 'lg' ? 'text-[34px] leading-none' : 'text-[22px] leading-tight',
+          )}
+        >
+          {value}
+        </span>
+        {unit && <span className="text-[15px] font-medium text-ink-2">{unit}</span>}
+      </div>
+      {hint && <div className="mt-1 text-[12px] text-ink-3">{hint}</div>}
     </div>
   );
 }
@@ -63,7 +99,7 @@ export function Btn({
 }: {
   children: ReactNode;
   onClick?: () => void;
-  variant?: 'primary' | 'ghost' | 'danger';
+  variant?: 'primary' | 'accent' | 'quiet' | 'danger';
   className?: string;
   disabled?: boolean;
 }) {
@@ -73,10 +109,11 @@ export function Btn({
       onClick={onClick}
       disabled={disabled}
       className={clsx(
-        'inline-flex items-center justify-center gap-1 rounded-xl px-3 py-2 text-sm font-bold transition active:scale-95 disabled:opacity-50',
-        variant === 'primary' && 'bg-aura-violet text-white hover:bg-aura-violet/90',
-        variant === 'ghost' && 'border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50',
-        variant === 'danger' && 'bg-aura-sensor text-white hover:bg-aura-sensor/90',
+        'btn px-4 py-2.5 text-[15px] disabled:opacity-40',
+        variant === 'primary' && 'btn-primary',
+        variant === 'accent' && 'btn-accent',
+        variant === 'quiet' && 'btn-quiet',
+        variant === 'danger' && 'btn-quiet text-red!',
         className,
       )}
     >
@@ -86,11 +123,15 @@ export function Btn({
 }
 
 export const FASE_COLOR: Record<string, string> = {
-  despierta: '#e03131',
-  ligero: '#b197fc',
-  profundo: '#6741d9',
-  rem: '#0c8599',
+  despierta: '#ff453a',
+  ligero: '#c4b8ff',
+  profundo: '#7d6bff',
+  rem: '#64d2ff',
 };
+
+/** Shared recharts styling (dark, minimal). */
+export const AXIS_TICK = { fontSize: 11, fill: '#6e6e73' };
+export const GRID_STROKE = 'rgba(255,255,255,0.06)';
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 

@@ -1,50 +1,46 @@
-import { Clock, Gauge, Heart, Moon, Target, Thermometer } from 'lucide-react';
-import type { ReactNode } from 'react';
 import { FASE_LABEL, horaSim, NIGHT_MIN } from '../../lib/sim';
 import type { Live } from '../../lib/types';
 
-function Tile({
-  icon,
+function Metric({
   label,
   value,
+  unit,
   hint,
+  tint = 'text-ink',
 }: {
-  icon: ReactNode;
   label: string;
   value: string;
+  unit?: string;
   hint?: string;
+  tint?: string;
 }) {
   return (
-    <div className="rounded-2xl bg-[#f8f6ff] p-3">
-      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-        {icon}
-        {label}
-      </div>
-      <div className="mt-1 text-xl font-extrabold text-aura-night">{value}</div>
-      {hint && <div className="text-xs text-neutral-500">{hint}</div>}
+    <div className="px-4 py-3.5">
+      <p className="text-[13px] text-ink-2">{label}</p>
+      <p className={`mt-0.5 text-[24px] font-bold leading-tight tracking-tight tabular-nums ${tint}`}>
+        {value}
+        {unit && <span className="ml-1 text-[13px] font-semibold text-ink-2">{unit}</span>}
+      </p>
+      {hint && <p className="text-[11px] text-ink-3">{hint}</p>}
     </div>
   );
 }
 
 export function StatTiles({ live }: { live: Live }) {
   return (
-    <div className="grid grid-cols-3 gap-2">
-      <Tile icon={<Thermometer size={14} />} label="Temp actual" value={`${live.temp.toFixed(1)} °C`} />
-      <Tile icon={<Target size={14} />} label="Objetivo" value={`${live.objetivo.toFixed(1)} °C`} />
-      <Tile icon={<Moon size={14} />} label="Fase" value={FASE_LABEL[live.fase]} />
-      <Tile
-        icon={<Heart size={14} className="text-aura-sensor" />}
+    <div className="card grid grid-cols-3 overflow-hidden [&>*:nth-child(-n+3)]:border-b [&>*:not(:nth-child(3n))]:border-r [&>*]:border-line">
+      <Metric label="Temp actual" value={live.temp.toFixed(1)} unit="°C" tint="text-teal" />
+      <Metric label="Objetivo" value={live.objetivo.toFixed(1)} unit="°C" />
+      <Metric label="Fase" value={FASE_LABEL[live.fase]} tint="text-accent" />
+      <Metric
         label="Pulso"
-        value={`${live.pulso} lpm`}
+        value={String(live.pulso)}
+        unit="lpm"
+        tint="text-red"
         hint={live.fuente === 'xiaomi' ? 'Aura Sensor ✓' : 'simulado'}
       />
-      <Tile
-        icon={<Gauge size={14} />}
-        label="Bomba"
-        value={`${live.ruido.toFixed(0)} dB`}
-        hint="< 30 dB"
-      />
-      <Tile icon={<Clock size={14} />} label="Hora sim." value={horaSim(live.minute)} />
+      <Metric label="Bomba" value={live.ruido.toFixed(0)} unit="dB" hint="< 30 dB" />
+      <Metric label="Hora sim." value={horaSim(live.minute)} />
     </div>
   );
 }
@@ -53,16 +49,16 @@ export function NightProgress({ live }: { live: Live }) {
   const pct = Math.min((live.minute / NIGHT_MIN) * 100, 100);
   return (
     <div>
-      <div className="mb-1 flex justify-between text-xs font-semibold text-neutral-500">
+      <div className="h-1 overflow-hidden rounded-full bg-surface-2">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-accent-strong to-accent transition-[width] duration-200"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <div className="mt-2 flex justify-between text-[11px] text-ink-3 tabular-nums">
         <span>9:40 p. m.</span>
         <span>{Math.round(pct)} % de la noche</span>
         <span>5:40 a. m.</span>
-      </div>
-      <div className="h-3 overflow-hidden rounded-full bg-aura-soft">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-aura-violet to-aura-lilac transition-[width] duration-200"
-          style={{ width: `${pct}%` }}
-        />
       </div>
     </div>
   );

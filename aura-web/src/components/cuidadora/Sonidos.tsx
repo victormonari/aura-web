@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import { Minus, Play, Plus, Square, Timer } from 'lucide-react';
+import { CloudRain, Leaf, type LucideIcon, Minus, Music, Play, Plus, Square, Waves } from 'lucide-react';
 import type { Sonido } from '../../lib/sound';
 import { SONIDOS } from './helpers';
-import { BigButton, Body, Title, TopBar } from './ui';
+import { BigButton, Body, STROKE, Title, TopBar } from './ui';
 
 export interface SonidoState {
   kind: Sonido;
@@ -11,6 +11,13 @@ export interface SonidoState {
 }
 
 const MINUTOS = [15, 30, 60];
+
+const ICONO: Record<Sonido, LucideIcon> = {
+  lluvia: CloudRain,
+  mar: Waves,
+  ruido: Leaf,
+  musica: Music,
+};
 
 export function Sonidos({
   dark,
@@ -21,6 +28,7 @@ export function Sonidos({
   onParar,
   onBack,
 }: {
+  /** true while sleeping: dimmer text, no bright whites */
   dark: boolean;
   state: SonidoState;
   setState: (s: SonidoState) => void;
@@ -29,8 +37,7 @@ export function Sonidos({
   onParar: () => void;
   onBack: () => void;
 }) {
-  const card = dark ? 'bg-white/10 text-amber-50' : 'bg-aura-soft text-aura-night';
-  const sel = dark ? 'bg-amber-200 text-aura-night' : 'bg-aura-violet text-white';
+  const strong = dark ? 'text-ink-2' : 'text-ink';
   const nivel = Math.round(state.vol * 10);
 
   const elegir = (kind: Sonido) => {
@@ -44,72 +51,105 @@ export function Sonidos({
   };
 
   return (
-    <>
-      <TopBar dark={dark} onBack={onBack} leer="Elige un sonido para dormir: lluvia, mar, ruido suave o música." />
+    <div className={clsx('flex flex-1 flex-col min-h-0', dark && 'bg-black')}>
+      <TopBar
+        night={dark}
+        onBack={onBack}
+        leer="Elige un sonido para dormir: lluvia, mar, ruido suave o música."
+      />
       <Body>
-        <Title dark={dark}>Sonidos</Title>
+        <Title night={dark}>Sonidos</Title>
+
         <div className="grid grid-cols-2 gap-3">
-          {SONIDOS.map((s) => (
-            <button
-              key={s.kind}
-              type="button"
-              onClick={() => elegir(s.kind)}
-              className={clsx(
-                'min-h-24 rounded-3xl flex flex-col items-center justify-center gap-1 text-xl font-extrabold transition',
-                state.kind === s.kind ? sel : card,
-              )}
-            >
-              <span className="text-[34px] leading-none">{s.emoji}</span>
-              {s.label}
-            </button>
-          ))}
+          {SONIDOS.map((s) => {
+            const Icon = ICONO[s.kind];
+            const on = state.kind === s.kind;
+            return (
+              <button
+                key={s.kind}
+                type="button"
+                onClick={() => elegir(s.kind)}
+                className={clsx(
+                  'card min-h-[104px] p-4 flex flex-col justify-between text-left transition active:scale-[0.98]',
+                  on && 'bg-surface-2 ring-1 ring-accent/60',
+                )}
+              >
+                <span
+                  className={clsx(
+                    'grid size-10 place-items-center rounded-xl',
+                    on ? 'bg-accent/20 text-accent' : 'bg-surface-3/60 text-ink-3',
+                  )}
+                >
+                  <Icon size={22} strokeWidth={STROKE} />
+                </span>
+                <span className={clsx('text-[20px] font-semibold leading-tight', on ? strong : 'text-ink-2')}>
+                  {s.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        <div className="flex items-center gap-2">
-          <Timer size={26} className="shrink-0" />
-          {MINUTOS.map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => setState({ ...state, minutos: m })}
-              className={clsx(
-                'flex-1 min-h-14 rounded-2xl text-xl font-bold',
-                state.minutos === m ? sel : card,
-              )}
-            >
-              {m} min
-            </button>
-          ))}
+        {/* iOS segmented control for the timer */}
+        <div className="flex flex-col gap-2">
+          <span className="eyebrow px-1">Apagar en</span>
+          <div className="flex rounded-full bg-surface p-1 border border-line">
+            {MINUTOS.map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setState({ ...state, minutos: m })}
+                className={clsx(
+                  'flex-1 min-h-14 rounded-full text-[20px] font-semibold transition',
+                  state.minutos === m ? `bg-surface-3 ${strong}` : 'text-ink-3',
+                )}
+              >
+                {m} min
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className={clsx('flex items-center gap-3 rounded-3xl p-2', card)}>
+        <div className="card flex items-center gap-2 p-2">
           <button
             type="button"
             onClick={() => cambiarVol(-0.1)}
-            className="min-h-16 px-4 rounded-2xl flex items-center gap-1 text-xl font-bold"
+            className="btn min-h-16 px-4 text-[20px] text-ink-2"
           >
-            <Minus size={24} /> Bajo
+            <Minus size={22} strokeWidth={STROKE} /> Bajo
           </button>
-          <span className="flex-1 text-center text-xl font-extrabold">Volumen {nivel}</span>
+          <div className="flex flex-1 flex-col items-center gap-2">
+            <span className={clsx('text-[20px] font-semibold tabular-nums', strong)}>Volumen {nivel}</span>
+            <span className="h-1.5 w-full rounded-full bg-surface-3">
+              <span
+                className="block h-full rounded-full bg-accent/80"
+                style={{ width: `${nivel * 10}%` }}
+              />
+            </span>
+          </div>
           <button
             type="button"
             onClick={() => cambiarVol(0.1)}
-            className="min-h-16 px-4 rounded-2xl flex items-center gap-1 text-xl font-bold"
+            className="btn min-h-16 px-4 text-[20px] text-ink-2"
           >
-            Alto <Plus size={24} />
+            Alto <Plus size={22} strokeWidth={STROKE} />
           </button>
         </div>
 
         {sonando ? (
-          <BigButton tone="amber" icon={<Square size={28} />} onClick={onParar}>
+          <BigButton tone="quiet" icon={<Square size={22} strokeWidth={STROKE} />} onClick={onParar}>
             Parar
           </BigButton>
         ) : (
-          <BigButton tone={dark ? 'night' : 'violet'} icon={<Play size={28} />} onClick={() => onPlay(state)}>
+          <BigButton
+            tone={dark ? 'night' : 'primary'}
+            icon={<Play size={22} strokeWidth={STROKE} />}
+            onClick={() => onPlay(state)}
+          >
             Escuchar
           </BigButton>
         )}
       </Body>
-    </>
+    </div>
   );
 }

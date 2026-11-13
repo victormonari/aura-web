@@ -1,19 +1,123 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
+/*
+ * Aura dark design system — Apple-like: true black canvas, layered gray
+ * surfaces, hairline separators, SF Pro type, one restrained accent per product.
+ */
 @theme {
-  --font-sans: 'Nunito', system-ui, sans-serif;
-  --color-aura-violet: #6741d9;
-  --color-aura-lilac: #b197fc;
-  --color-aura-soft: #e5dbff;
-  --color-aura-amber: #f59f00;
-  --color-aura-night: #25213d;
-  --color-aura-termo: #0c8599;
-  --color-aura-sensor: #e03131;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+
+  /* canvas & surfaces (iOS dark system backgrounds) */
+  --color-bg: #000000;
+  --color-surface: #1c1c1e;
+  --color-surface-2: #2c2c2e;
+  --color-surface-3: #3a3a3c;
+  --color-line: rgb(255 255 255 / 0.08);
+
+  /* text */
+  --color-ink: #f5f5f7;
+  --color-ink-2: #a1a1a6;
+  --color-ink-3: #6e6e73;
+
+  /* accents (iOS dark system colors, tuned to Aura) */
+  --color-accent: #a594ff; /* Aura violet */
+  --color-accent-strong: #7d6bff;
+  --color-amber: #ffb340; /* Aura moon */
+  --color-teal: #64d2ff; /* Aura TermoSleep */
+  --color-red: #ff453a; /* Aura Sensor / alerts */
+  --color-green: #30d158;
+  --color-orange: #ff9f0a;
+
+  /* legacy tokens remapped to the dark palette (kept so old classes don't break) */
+  --color-aura-violet: #a594ff;
+  --color-aura-lilac: #c4b8ff;
+  --color-aura-soft: #2c2c2e;
+  --color-aura-amber: #ffb340;
+  --color-aura-night: #000000;
+  --color-aura-termo: #64d2ff;
+  --color-aura-sensor: #ff453a;
 }
 
-html,
-body {
-  margin: 0;
-  background: #f3f0ff;
+@layer base {
+  html,
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  ::selection {
+    background: rgb(165 148 255 / 0.35);
+  }
+}
+
+@layer components {
+  /* grouped card, like iOS inset grouped lists */
+  .card {
+    background: var(--color-surface);
+    border-radius: 22px;
+    border: 1px solid var(--color-line);
+  }
+  .card-2 {
+    background: var(--color-surface-2);
+    border-radius: 18px;
+  }
+  /* frosted glass for bars and overlays */
+  .glass {
+    background: rgb(28 28 30 / 0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  /* small uppercase section label */
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+  .title-xl {
+    font-size: 34px;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .title-lg {
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: transform 0.15s ease, opacity 0.15s ease, background 0.2s ease;
+  }
+  .btn:active {
+    transform: scale(0.98);
+  }
+  .btn-primary {
+    background: var(--color-ink);
+    color: #000;
+  }
+  .btn-accent {
+    background: var(--color-accent);
+    color: #0b0820;
+  }
+  .btn-quiet {
+    background: var(--color-surface-2);
+    color: var(--color-ink);
+  }
+  .hairline {
+    border-color: var(--color-line);
+  }
 }

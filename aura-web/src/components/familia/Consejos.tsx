@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { Check, Info } from 'lucide-react';
 import { useState } from 'react';
 import { useAura } from '../../lib/store';
@@ -28,10 +27,11 @@ export function Consejos() {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <SectionTitle sub={`Según cómo durmió ${nombre} estas noches`}>Consejos</SectionTitle>
-      <div className="flex gap-2 rounded-xl bg-aura-soft/60 p-2 text-[11px] text-aura-violet">
-        <Info size={14} className="mt-0.5 shrink-0" />
+
+      <div className="flex gap-2.5 px-1 text-[13px] leading-snug text-ink-2">
+        <Info size={16} strokeWidth={1.75} className="mt-0.5 shrink-0 text-accent" />
         <span>
           Estos consejos cambian la sábana o los turnos de la familia. No se le envían a {nombre}: solo
           nota que descansa mejor.
@@ -39,21 +39,21 @@ export function Consejos() {
       </div>
 
       {visibles.length === 0 && (
-        <Card className="text-sm text-neutral-500">No hay consejos por ahora. ¡Todo va bien!</Card>
+        <Card className="text-[15px] text-ink-2">No hay consejos por ahora. ¡Todo va bien!</Card>
       )}
 
       {visibles.map((c) => {
         const ok = c.estado === 'aplicado';
         return (
-          <Card key={c.id} className={clsx(ok && 'border-emerald-200 bg-emerald-50')}>
-            <div className="text-sm font-extrabold text-aura-night">{c.titulo}</div>
-            {c.motivo && <p className="mt-0.5 text-xs text-neutral-600">{c.motivo}</p>}
+          <Card key={c.id}>
+            <div className="text-[17px] font-semibold leading-snug text-ink">{c.titulo}</div>
+            {c.motivo && <p className="mt-1 text-[14px] leading-snug text-ink-2">{c.motivo}</p>}
             {ok ? (
-              <div className="mt-2 flex items-center gap-1 text-sm font-bold text-emerald-700">
-                <Check size={16} /> Aplicado
+              <div className="mt-3 flex items-center gap-1.5 text-[15px] font-semibold text-green">
+                <Check size={18} strokeWidth={2.25} /> Aplicado
               </div>
             ) : (
-              <div className="mt-2 flex gap-2">
+              <div className="mt-4 flex gap-2">
                 <Btn
                   className="flex-1"
                   disabled={busy === c.id}
@@ -62,7 +62,7 @@ export function Consejos() {
                   {busy === c.id ? '…' : ACCION_LABEL[c.accion]}
                 </Btn>
                 <Btn
-                  variant="ghost"
+                  variant="quiet"
                   disabled={busy === c.id}
                   onClick={() => void run(c.id, () => descartarConsejo(c))}
                 >

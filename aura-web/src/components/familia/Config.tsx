@@ -1,9 +1,9 @@
 import clsx from 'clsx';
-import { Bluetooth, LogOut, RotateCcw, Users } from 'lucide-react';
-import { useState } from 'react';
+import { Bluetooth, LogOut, RotateCcw } from 'lucide-react';
+import { Fragment, useState } from 'react';
 import { sensorSupported } from '../../lib/sensor';
 import { useAura } from '../../lib/store';
-import { Btn, Card, SectionTitle } from './ui';
+import { Btn, Eyebrow, SectionTitle, Sep } from './ui';
 
 const ROL: Record<string, string> = {
   cuidadora: 'Cuidadora',
@@ -25,10 +25,13 @@ function Toggle({ initial }: { initial: boolean }) {
       role="switch"
       aria-checked={on}
       onClick={() => setOn(!on)}
-      className={clsx('relative h-6 w-11 shrink-0 rounded-full transition', on ? 'bg-aura-violet' : 'bg-neutral-300')}
+      className={clsx('relative h-[31px] w-[51px] shrink-0 rounded-full transition-colors', on ? 'bg-green' : 'bg-surface-3')}
     >
       <span
-        className={clsx('absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all', on ? 'left-5.5' : 'left-0.5')}
+        className={clsx(
+          'absolute top-[2px] size-[27px] rounded-full bg-white shadow transition-all',
+          on ? 'left-[22px]' : 'left-[2px]',
+        )}
       />
     </button>
   );
@@ -58,94 +61,101 @@ export function Config({ onSalir }: { onSalir?: () => void }) {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <SectionTitle>Configuración</SectionTitle>
 
-      <Card className="flex items-center gap-3">
-        <img src="/aura-termosleep-simbolo.png" alt="" className="h-9 w-9" />
-        <div className="flex-1">
-          <div className="text-sm font-extrabold text-aura-night">Aura TermoSleep</div>
-          <div className="text-xs text-emerald-700">TS-A21 · conectada ✓</div>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="flex items-center gap-3">
-          <img src="/aura-sensor-simbolo.png" alt="" className="h-9 w-9" />
+      <Eyebrow className="pt-2">Dispositivos</Eyebrow>
+      <div className="card overflow-hidden">
+        <div className="flex items-center gap-3 px-4 py-3.5">
+          <img src="/aura-termosleep-simbolo.png" alt="" className="size-9" />
           <div className="flex-1">
-            <div className="text-sm font-extrabold text-aura-night">Aura Sensor</div>
-            <div className={clsx('text-xs', sensorNombre ? 'text-emerald-700' : 'text-neutral-500')}>
-              {sensorNombre ? `${sensorNombre} · conectado ✓` : 'Usando pulso simulado'}
+            <div className="text-[16px] font-semibold text-ink">Aura TermoSleep</div>
+            <div className="text-[13px] text-ink-2">TS-A21</div>
+          </div>
+          <span className="flex items-center gap-1.5 text-[13px] text-green">
+            <span className="size-1.5 rounded-full bg-green" /> conectada ✓
+          </span>
+        </div>
+        <Sep inset={64} />
+        <div className="px-4 py-3.5">
+          <div className="flex items-center gap-3">
+            <img src="/aura-sensor-simbolo.png" alt="" className="size-9" />
+            <div className="flex-1">
+              <div className="text-[16px] font-semibold text-ink">Aura Sensor</div>
+              <div className={clsx('text-[13px]', sensorNombre ? 'text-green' : 'text-ink-2')}>
+                {sensorNombre ? `${sensorNombre} · conectado ✓` : 'Usando pulso simulado'}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="mt-2 flex gap-2">
-          {!sensorNombre && (
-            <Btn className="flex-1" onClick={() => void conectar()} disabled={busy}>
-              <Bluetooth size={14} /> {busy ? 'Buscando…' : 'Conectar Aura Sensor'}
+          <div className="mt-3 flex gap-2">
+            {!sensorNombre && (
+              <Btn variant="accent" className="flex-1" onClick={() => void conectar()} disabled={busy}>
+                <Bluetooth size={16} strokeWidth={1.75} /> {busy ? 'Buscando…' : 'Conectar Aura Sensor'}
+              </Btn>
+            )}
+            <Btn variant="quiet" className={clsx(sensorNombre && 'flex-1')} onClick={usarSimulado}>
+              Usar simulado
             </Btn>
-          )}
-          <Btn variant="ghost" className={clsx(sensorNombre && 'flex-1')} onClick={usarSimulado}>
-            Usar simulado
-          </Btn>
+          </div>
+          {error && <p className="mt-2 text-[13px] text-red">{error}</p>}
         </div>
-        {error && <p className="mt-2 rounded-lg bg-red-50 p-2 text-xs text-aura-sensor">{error}</p>}
-      </Card>
+      </div>
 
-      <Card>
-        <div className="mb-2 flex items-center gap-1 text-sm font-bold text-aura-night">
-          <Users size={16} /> Familia
-        </div>
-        <ul className="divide-y divide-neutral-100">
-          {miembros.map((m) => (
-            <li key={m.id} className="flex items-center gap-2 py-1.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-aura-soft text-xs font-extrabold text-aura-violet">
+      <Eyebrow className="pt-2">Familia</Eyebrow>
+      <div className="card overflow-hidden">
+        {miembros.map((m, i) => (
+          <Fragment key={m.id}>
+            {i > 0 && <Sep inset={60} />}
+            <div className="flex items-center gap-3 px-4 py-3">
+              <span className="grid size-8 place-items-center rounded-full bg-surface-3 text-[14px] font-semibold text-ink">
                 {m.nombre.charAt(0)}
               </span>
-              <span className="flex-1 text-sm">
+              <span className="flex-1 text-[16px] text-ink">
                 {m.nombre}
-                {m.id === familiar?.id && <span className="text-[11px] text-aura-violet"> · tú</span>}
+                {m.id === familiar?.id && <span className="text-[13px] text-accent"> · tú</span>}
               </span>
-              <span className="text-[11px] text-neutral-500">{ROL[m.rol] ?? m.rol}</span>
-            </li>
-          ))}
-        </ul>
-      </Card>
+              <span className="text-[13px] text-ink-3">{ROL[m.rol] ?? m.rol}</span>
+            </div>
+          </Fragment>
+        ))}
+      </div>
 
-      <Card>
-        <div className="mb-2 text-sm font-bold text-aura-night">Alertas</div>
-        <div className="space-y-2">
-          {reglas(nombre).map((r) => (
-            <div key={r.label} className="flex items-center gap-2">
-              <span className="flex-1 text-xs text-neutral-700">{r.label}</span>
+      <Eyebrow className="pt-2">Alertas</Eyebrow>
+      <div className="card overflow-hidden">
+        {reglas(nombre).map((r, i) => (
+          <Fragment key={r.label}>
+            {i > 0 && <Sep inset={16} />}
+            <div className="flex items-center gap-3 px-4 py-3">
+              <span className="flex-1 text-[15px] leading-snug text-ink">{r.label}</span>
               <Toggle initial={r.on} />
             </div>
-          ))}
-        </div>
-        <p className="mt-2 text-[11px] text-neutral-500">Las alertas solo llegan a la familia, nunca a {nombre}.</p>
-      </Card>
+          </Fragment>
+        ))}
+      </div>
+      <p className="-mt-2 px-1 text-[13px] text-ink-3">Las alertas solo llegan a la familia, nunca a {nombre}.</p>
 
-      {onSalir && (
-        <Btn variant="ghost" className="w-full py-3" onClick={onSalir}>
-          <LogOut size={16} /> Cambiar de persona
+      <div className="space-y-2 pt-2">
+        {onSalir && (
+          <Btn variant="quiet" className="w-full py-3" onClick={onSalir}>
+            <LogOut size={16} strokeWidth={1.75} /> Cambiar de persona
+          </Btn>
+        )}
+        <Btn
+          variant="danger"
+          className="w-full py-3"
+          disabled={resetting}
+          onClick={async () => {
+            setResetting(true);
+            try {
+              await resetDemo();
+            } finally {
+              setResetting(false);
+            }
+          }}
+        >
+          <RotateCcw size={16} strokeWidth={1.75} /> {resetting ? 'Reiniciando…' : 'Reiniciar demo'}
         </Btn>
-      )}
-
-      <Btn
-        variant="danger"
-        className="w-full py-3"
-        disabled={resetting}
-        onClick={async () => {
-          setResetting(true);
-          try {
-            await resetDemo();
-          } finally {
-            setResetting(false);
-          }
-        }}
-      >
-        <RotateCcw size={16} /> {resetting ? 'Reiniciando…' : 'Reiniciar demo'}
-      </Btn>
+      </div>
     </div>
   );
 }
